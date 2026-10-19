@@ -26,6 +26,7 @@
   });
 
   initThemeToggle();
+  initSearch();
 })();
 
 function initThemeToggle() {
@@ -52,6 +53,51 @@ function initThemeToggle() {
   btn.addEventListener('click', () => {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     applyTheme(isDark ? 'light' : 'dark');
+  });
+}
+
+function initSearch() {
+  const search = document.getElementById('search');
+  const toggle = document.getElementById('search-toggle');
+  const input = document.getElementById('search-input');
+  const closeBtn = document.getElementById('search-close');
+  if (!search || !toggle || !input || !closeBtn) return;
+
+  function openSearch() {
+    search.classList.add('search--open');
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.setAttribute('aria-label', 'Close search');
+    window.requestAnimationFrame(() => input.focus());
+  }
+
+  function closeSearch() {
+    search.classList.remove('search--open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Open search');
+    input.value = '';
+    toggle.focus();
+  }
+
+  toggle.addEventListener('click', () => {
+    if (search.classList.contains('search--open')) {
+      closeSearch();
+    } else {
+      openSearch();
+    }
+  });
+
+  closeBtn.addEventListener('click', closeSearch);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && search.classList.contains('search--open')) {
+      closeSearch();
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    if (search.classList.contains('search--open') && !search.contains(event.target)) {
+      closeSearch();
+    }
   });
 }
 
